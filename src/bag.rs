@@ -1,9 +1,11 @@
 use rand::seq::SliceRandom;
+use crate::shapes::{Brick, Shape};
 
 #[derive(Default)]
+#[derive(Debug)]
 pub struct Bag {
-    pub items: Vec<Vec<Vec<u8>>>,
-    pub default_items: Vec<Vec<Vec<u8>>>,
+    pub items: Vec<Shape>,
+    pub default_items: Vec<Shape>,
 }
 
 impl Bag {
@@ -20,7 +22,7 @@ impl Bag {
         self.items.shuffle(&mut rng);
     }
 
-    pub fn get_item(&mut self) -> Vec<Vec<u8>> {
+    pub fn get_item(&mut self) -> Shape {
         if self.items.len() < 1 {
             self.refill();
         }
