@@ -1,0 +1,8 @@
+pub const SQUARE_SIZE: f32 = 20.0;
+pub const NUM_OF_SQUARES_X: f32 = 10.0;
+pub const NUM_OF_SQUARES_Y: f32 = 20.0;
+pub const SPACING: f32 = 1.0;
+pub const OFFSET_Y: f32 = 150.0;
+pub const OFFSET_X: f32 = 400.0;
+pub const PLAYGROUND_WIDTH: f32 = NUM_OF_SQUARES_X * SQUARE_SIZE + (NUM_OF_SQUARES_X - 1.0) * SPACING;
+pub const PLAYGROUND_HEIGHT: f32 = NUM_OF_SQUARES_Y * SQUARE_SIZE + (NUM_OF_SQUARES_Y - 1.0) * SPACING;

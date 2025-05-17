@@ -37,10 +37,10 @@ impl Shape {
 
         Self::new(
             vec![
-                vec![e, e, e, e],
-                vec![b, b, b, b],
-                vec![e, e, e, e],
-                vec![e, e, e, e],
+                vec![e, b, e, e],
+                vec![e, b, e, e],
+                vec![e, b, e, e],
+                vec![e, b, e, e],
             ],
         )
     }
