@@ -39,6 +39,7 @@ fn init() -> (State, Task<Message>) {
         bag: Bag::new(),
         game_space,
         tick_rate_ms: 500,
+        is_running: false,
         ..Default::default()
     };
     (state, Task::perform(async {}, |_| Message::Initialize))

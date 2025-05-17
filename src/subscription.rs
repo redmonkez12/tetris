@@ -11,6 +11,7 @@ pub fn subscription(state: &State) -> Subscription<Message> {
         match key.as_ref() {
             keyboard::Key::Character("q") => Some(Message::RotateClockwise),
             keyboard::Key::Character("w") => Some(Message::Rotate),
+            Named(keyboard::key::Named::Space) => Some(Message::TogglePause),
             Named(keyboard::key::Named::ArrowLeft) => Some(Message::Move(Direction::Left)),
             Named(keyboard::key::Named::ArrowRight) => Some(Message::Move(Direction::Right)),
             Named(keyboard::key::Named::ArrowDown) => Some(Message::Move(Direction::Bottom)),

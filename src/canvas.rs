@@ -15,6 +15,7 @@ pub struct State {
     pub game_space: Matrix,
     pub tick_rate_ms: u64,
     pub score: u32,
+    pub is_running: bool,
 }
 
 impl<Message> canvas::Program<Message> for State {
@@ -40,12 +41,25 @@ impl<Message> canvas::Program<Message> for State {
                 },
                 color: WHITE_COLOR.into(),
                 size: Pixels(14.0),
-                line_height: Default::default(),
-                font: Default::default(),
                 horizontal_alignment: Horizontal::Left,
                 vertical_alignment: Vertical::Center,
-                shaping: Default::default(),
+                ..Default::default()
             });
+            
+            if !self.is_running {
+                frame.fill_text(Text{
+                    content: "Start a game".into(),
+                    position: Point {
+                        x: half - 35.0,
+                        y: half - OFFSET_Y,
+                    },
+                    color: WHITE_COLOR.into(),
+                    size: Pixels(14.0),
+                    horizontal_alignment: Horizontal::Left,
+                    vertical_alignment: Vertical::Center,
+                    ..Default::default()
+                });
+            }
 
             for (row_index, row) in self.game_space.iter().enumerate() {
                 for (col_index, cell) in row.iter().enumerate() {

@@ -13,11 +13,20 @@ pub enum Message {
     Move(Direction),
     RotateClockwise,
     Rotate,
+    TogglePause,
 }
 
 pub fn update(state: &mut State, message: Message) -> Task<Message> {
     match message {
+        Message::TogglePause => {
+            state.is_running = !state.is_running;
+            Task::none()
+        }
         Message::Move(dir) => {
+            if !state.is_running {
+                return Task::none();
+            }
+        
             if dir == Direction::Right {
                 let rows = state.game_space.len();
                 let cols = state.game_space[0].len();
