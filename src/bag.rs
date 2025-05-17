@@ -23,10 +23,16 @@ impl Bag {
     }
 
     pub fn get_item(&mut self) -> Shape {
+        let shape = self.items.pop().unwrap();
+
         if self.items.len() < 1 {
             self.refill();
         }
-    
-        self.items.pop().unwrap()
+        
+        shape
+    }
+
+    pub fn show_next(&self) -> Option<Shape> {
+        self.items.last().cloned()
     }
 }

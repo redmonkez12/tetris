@@ -1,11 +1,11 @@
 use crate::bag::Bag;
 use crate::colors::WHITE_COLOR;
 use crate::constants::{OFFSET_Y, PLAYGROUND_HEIGHT, PLAYGROUND_WIDTH, SPACING, SQUARE_SIZE};
-use crate::shapes::Matrix;
+use crate::shapes::{Matrix, Shape};
+use iced::alignment::{Horizontal, Vertical};
 use iced::widget::canvas;
 use iced::widget::canvas::{Cache, Geometry, Path, Stroke, Text};
-use iced::{Point, Rectangle, Renderer, Size, Theme, mouse, Pixels};
-use iced::alignment::{Horizontal, Vertical};
+use iced::{Color, Pixels, Point, Rectangle, Renderer, Size, Theme, mouse};
 
 #[derive(Debug, Default)]
 pub struct State {
@@ -16,8 +16,8 @@ pub struct State {
     pub tick_rate_ms: u64,
     pub score: u32,
     pub is_running: bool,
+    pub next_item: Shape,
 }
-
 impl<Message> canvas::Program<Message> for State {
     type State = ();
 
@@ -32,8 +32,8 @@ impl<Message> canvas::Program<Message> for State {
         let playground = self.playground.draw(renderer, bounds.size(), |frame| {
             let half = bounds.width / 2.0;
             let offset_x = half - PLAYGROUND_WIDTH / 2.0;
-            
-            frame.fill_text(Text{
+
+            frame.fill_text(Text {
                 content: format!("Score: {}", self.score),
                 position: Point {
                     x: half + PLAYGROUND_WIDTH / 2.0 + 10.0,
@@ -45,12 +45,72 @@ impl<Message> canvas::Program<Message> for State {
                 vertical_alignment: Vertical::Center,
                 ..Default::default()
             });
-            
+
+            frame.fill_text(Text {
+                content: "Next brick".to_string(),
+                position: Point {
+                    x: half + PLAYGROUND_WIDTH / 2.0 + 10.0,
+                    y: OFFSET_Y + 20.0,
+                },
+                color: WHITE_COLOR.into(),
+                size: Pixels(14.0),
+                horizontal_alignment: Horizontal::Left,
+                vertical_alignment: Vertical::Center,
+                ..Default::default()
+            });
+
+            let offset = 30.0;
+            let mut seen = false;
+            let mut row_index = 0;
+
+            for (_, row) in self.next_item.matrix.iter().enumerate() {
+                seen = false;
+                
+                for (col_index, item) in row.iter().enumerate() {
+                    if let Some(brick) = item {
+                        seen = true;
+                        
+                        let rect = Path::rectangle(
+                            Point {
+                                x: col_index as f32 * SQUARE_SIZE
+                                    + half
+                                    + PLAYGROUND_WIDTH / 2.0
+                                    + 10.0
+                                    + col_index as f32 * SPACING,
+                                y: row_index as f32 * SQUARE_SIZE
+                                    + OFFSET_Y
+                                    + offset
+                                    + row_index as f32 * SPACING,
+                            },
+                            Size {
+                                width: SQUARE_SIZE,
+                                height: SQUARE_SIZE,
+                            },
+                        );
+
+                        frame.fill(&rect, brick.color);
+                    }
+                }
+                
+                if seen {
+                    row_index += 1;
+                }
+            }
+
             if !self.is_running {
-                frame.fill_text(Text{
-                    content: "Start a game".into(),
+                frame.fill_rectangle(
+                    Point::new(half - 75.0, half - OFFSET_Y - 25.0),
+                    Size {
+                        width: 150.0,
+                        height: 50.0,
+                    },
+                    Color::from_rgb(0.5, 0.2, 0.8),
+                );
+
+                frame.fill_text(Text {
+                    content: "Press space to start".into(),
                     position: Point {
-                        x: half - 35.0,
+                        x: half - 55.0,
                         y: half - OFFSET_Y,
                     },
                     color: WHITE_COLOR.into(),

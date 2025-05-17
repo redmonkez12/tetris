@@ -152,6 +152,10 @@ pub fn update(state: &mut State, message: Message) -> Task<Message> {
                     }
 
                     let item = state.bag.get_item();
+                    if let Some(next_item) = state.bag.show_next() {
+                        state.next_item = next_item;
+                    }
+                    
                     let mut seen = false;
                     let mut start_row = 0;
                     let start_col = state.game_space[0].len() / 2 - 1;
@@ -180,13 +184,11 @@ pub fn update(state: &mut State, message: Message) -> Task<Message> {
 
                 clear_rows(&mut state.game_space, &mut state.score);
             }
-            state.playground.clear();
 
+            state.playground.clear();
             Task::none()
         }
         Message::Initialize => {
-            println!("Initialize");
-
             let mut bag = Bag::new();
             bag.default_items = vec![
                 Shape::create_o(),
@@ -201,6 +203,10 @@ pub fn update(state: &mut State, message: Message) -> Task<Message> {
             state.bag = bag;
 
             let item = state.bag.get_item();
+            if let Some(next_item) = state.bag.show_next() {
+                state.next_item = next_item;
+            }
+            
             let mut seen = false;
             let mut start_row = 0;
             let start_col = state.game_space[0].len() / 2 - 1;

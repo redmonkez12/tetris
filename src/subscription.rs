@@ -7,7 +7,6 @@ use crate::update::Message;
 
 pub fn subscription(state: &State) -> Subscription<Message> {
     fn handle_hotkey(key: keyboard::Key, _modifiers: keyboard::Modifiers) -> Option<Message> {
-        println!("{:?}", key.as_ref().clone());
         match key.as_ref() {
             keyboard::Key::Character("q") => Some(Message::RotateClockwise),
             keyboard::Key::Character("w") => Some(Message::Rotate),

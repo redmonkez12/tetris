@@ -8,7 +8,7 @@ pub fn clear_rows(game_space: &mut Vec<Vec<Option<crate::shapes::Brick>>>, score
         let mut is_complete = true;
 
         for col in 0..cols {
-            if game_space[row][col].is_none() {
+            if game_space[row][col].is_none() || (game_space[row][col].is_some() && game_space[row][col].unwrap().moving) {
                 is_complete = false;
                 break;
             }
