@@ -108,8 +108,6 @@ mod tests {
         assert_eq!(bag.items.len(), 6, "Bag should have 6 items after getting one");
         assert_eq!(next_shape, bag.items.last().unwrap().clone(), "Next shape should match the last in the bag");
 
-        let last_item_before_refill = bag.items[0].clone();
-
         for i in 0..5 {
             let (_, _) = bag.get_item();
             assert_eq!(bag.items.len(), 5-i, "Bag should decrease by one each time");
