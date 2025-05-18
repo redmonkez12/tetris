@@ -25,16 +25,14 @@ pub fn update(state: &mut State, message: Message) -> Task<Message> {
             if state.game_over {
                 state.game_space = state.default_game_space.clone();
                 state.game_over = false;
-                // state.bag.reset();
+                state.bag.refill();
                 state.score = 0;
                 state.rows_cleared = 0;
                 state.level = 0;
                 state.tick_rate_ms = get_speed_by_level(state.level);
 
-                let mut item = state.bag.get_item();
-                if let Some(next_item) = state.bag.peek() {
-                    state.next_item = next_item;
-                }
+                let (mut item, next_item) = state.bag.get_item();
+                state.next_item = next_item;
 
                 item.set_default_position(&mut state.game_space);
             }
@@ -81,13 +79,11 @@ pub fn update(state: &mut State, message: Message) -> Task<Message> {
             state.default_game_space = game_space;
 
             let mut bag = Bag::new();
-            // bag.reset();
+            bag.refill();
             state.bag = bag;
 
-            let mut item = state.bag.get_item();
-            if let Some(next_item) = state.bag.peek() {
-                state.next_item = next_item;
-            }
+            let (mut item, next_item) = state.bag.get_item();
+            state.next_item = next_item;
 
             item.set_default_position(&mut state.game_space);
 

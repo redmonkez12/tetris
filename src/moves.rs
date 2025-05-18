@@ -132,10 +132,8 @@ pub fn move_bottom(game_space: &mut Matrix, bag: &mut Bag, new_next_item: &mut S
             }
         }
 
-        let item = bag.get_item();
-        if let Some(next_item) = bag.peek() {
-            *new_next_item = next_item;
-        }
+        let (item, next_item) = bag.get_item();
+        *new_next_item = next_item;
 
         let mut seen = false;
         let mut start_row = 0;
