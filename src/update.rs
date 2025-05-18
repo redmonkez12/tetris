@@ -3,10 +3,10 @@ use crate::canvas::State;
 use crate::enums::Direction;
 use crate::moves::{move_bottom, move_left, move_right};
 use crate::rotations::{rotate_clockwise, rotate_counterclockwise};
-use crate::score::clear_rows;
 use crate::shapes::Shape;
 use iced::Task;
 use crate::level::{get_level, get_speed_by_level};
+use crate::playground::Playground;
 
 #[derive(Debug, Clone, Copy)]
 pub enum Message {
@@ -36,7 +36,7 @@ pub fn update(state: &mut State, message: Message) -> Task<Message> {
             } else {
                 move_bottom(&mut state.game_space, &mut state.bag, &mut state.next_item);
 
-                let cleared_rows = clear_rows(&mut state.game_space, &mut state.score);
+                let cleared_rows = Playground::clear_rows(&mut state.game_space, &mut state.score);
                 state.rows_cleared += cleared_rows;
                 state.level = get_level(state.rows_cleared);
                 state.tick_rate_ms = get_speed_by_level(state.level);

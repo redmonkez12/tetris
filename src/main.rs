@@ -8,9 +8,9 @@ mod canvas;
 mod enums;
 mod colors;
 mod constants;
-mod score;
 mod moves;
 mod level;
+mod playground;
 
 use crate::bag::Bag;
 use crate::shapes::{Brick};
