@@ -1,11 +1,12 @@
 use rand::seq::SliceRandom;
-use crate::shapes::{Brick, Matrix, Shape};
+use crate::shapes::{Shape};
+use crate::types::Shapes;
 
 #[derive(Default)]
 #[derive(Debug)]
 pub struct Bag {
-    pub items: Vec<Shape>,
-    pub default_items: Vec<Shape>,
+    pub items: Shapes,
+    pub default_items: Shapes,
 }
 
 impl Bag {
@@ -32,8 +33,20 @@ impl Bag {
         shape
     }
 
-    pub fn show_next(&self) -> Option<Shape> {
+    pub fn peek(&self) -> Option<Shape> {
         self.items.last().cloned()
     }
-    
+ 
+    pub fn reset(&mut self) {
+        self.default_items = vec![
+            Shape::create_o(),
+            Shape::create_i(),
+            Shape::create_s(),
+            Shape::create_z(),
+            Shape::create_t(),
+            Shape::create_l(),
+            Shape::create_j(),
+        ];
+        self.refill();
+    }
 }

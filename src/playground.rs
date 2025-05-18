@@ -3,7 +3,8 @@ use iced::alignment::{Horizontal, Vertical};
 use iced::widget::canvas::{Frame, Path, Stroke, Text};
 use crate::colors::WHITE_COLOR;
 use crate::constants::{OFFSET_Y, PLAYGROUND_HEIGHT, PLAYGROUND_WIDTH, SPACING, SQUARE_SIZE};
-use crate::shapes::{Matrix, Shape};
+use crate::shapes::{Shape};
+use crate::types::Matrix;
 
 pub struct Playground {
     half_width: f32,
@@ -14,6 +15,21 @@ impl Playground {
         Self {
             half_width,
         }
+    }
+    
+    pub fn render_game_over(&self, frame: &mut Frame<Renderer>) {
+        frame.fill_text(Text {
+            content: "Game over".into(),
+            position: Point {
+                x: self.half_width - 50.0,
+                y: self.half_width - OFFSET_Y - 100.0,
+            },
+            color: WHITE_COLOR.into(),
+            size: Pixels(20.0),
+            horizontal_alignment: Horizontal::Left,
+            vertical_alignment: Vertical::Center,
+            ..Default::default()
+        });
     }
 
     pub fn render_level(&mut self, frame: &mut Frame<Renderer>, level: u32) {
@@ -76,7 +92,7 @@ impl Playground {
                             x: col_index as f32 * SQUARE_SIZE
                                 + self.half_width
                                 + PLAYGROUND_WIDTH / 2.0
-                                + 10.0
+                                + 20.0
                                 + col_index as f32 * SPACING,
                             y: row_index as f32 * SQUARE_SIZE
                                 + OFFSET_Y
@@ -112,7 +128,7 @@ impl Playground {
         frame.fill_text(Text {
             content: "Press space to start".into(),
             position: Point {
-                x: self.half_width - 55.0,
+                x: self.half_width - 60.0,
                 y: self.half_width - OFFSET_Y,
             },
             color: WHITE_COLOR.into(),

@@ -1,4 +1,5 @@
 use iced::Color;
+use crate::types::Matrix;
 
 #[derive(Clone, Copy, Debug)]
 pub struct Brick {
@@ -11,8 +12,6 @@ impl Brick {
         Brick { color, moving}
     }
 }
-
-pub type Matrix = Vec<Vec<Option<Brick>>>;
 
 #[derive(Clone, Default, Debug)]
 pub struct Shape {
@@ -76,10 +75,9 @@ impl Shape {
 
         Self::new(
             vec![
-                vec![e, e, e, e],
-                vec![e, b, e, e],
-                vec![e, b, e, e],
-                vec![e, b, b, e],
+                vec![e, b, e],
+                vec![e, b, e],
+                vec![e, b, b],
             ],
         )
     }
@@ -91,10 +89,9 @@ impl Shape {
 
         Self::new(
             vec![
-                vec![e, e, e, e],
-                vec![e, e, b, e],
-                vec![e, e, b, e],
-                vec![e, b, b, e],
+                vec![e, b, e],
+                vec![e, b, e],
+                vec![b, b, e],
             ],
         )
     }
@@ -126,5 +123,5 @@ impl Shape {
                 start_row += 1
             }
         }
-    }
+    } 
 }

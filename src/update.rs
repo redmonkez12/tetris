@@ -1,17 +1,18 @@
 use crate::bag::Bag;
 use crate::canvas::State;
+use crate::constants::{NUM_OF_SQUARES_X, NUM_OF_SQUARES_Y};
 use crate::enums::Direction;
-use crate::moves::{move_bottom, move_left, move_right};
-use crate::rotations::{rotate_clockwise, rotate_counterclockwise};
-use crate::shapes::Shape;
-use iced::Task;
 use crate::level::{get_level, get_speed_by_level};
+use crate::moves::{move_bottom, move_left, move_right};
 use crate::playground::Playground;
+use crate::rotations::{rotate_clockwise, rotate_counterclockwise};
+use crate::types::{Matrix, TimeLocal};
+use iced::Task;
 
 #[derive(Debug, Clone, Copy)]
 pub enum Message {
     Initialize,
-    Tick(chrono::DateTime<chrono::Local>),
+    Tick(TimeLocal),
     Move(Direction),
     RotateClockwise,
     Rotate,
@@ -21,7 +22,25 @@ pub enum Message {
 pub fn update(state: &mut State, message: Message) -> Task<Message> {
     match message {
         Message::TogglePause => {
+            if state.game_over {
+                state.game_space = state.default_game_space.clone();
+                state.game_over = false;
+                state.bag.reset();
+                state.score = 0;
+                state.rows_cleared = 0;
+                state.level = 0;
+                state.tick_rate_ms = get_speed_by_level(state.level);
+
+                let mut item = state.bag.get_item();
+                if let Some(next_item) = state.bag.peek() {
+                    state.next_item = next_item;
+                }
+
+                item.set_default_position(&mut state.game_space);
+            }
+
             state.is_running = !state.is_running;
+            state.playground.clear();
             Task::none()
         }
         Message::Move(dir) => {
@@ -34,7 +53,13 @@ pub fn update(state: &mut State, message: Message) -> Task<Message> {
             } else if dir == Direction::Left {
                 move_left(&mut state.game_space);
             } else {
-                move_bottom(&mut state.game_space, &mut state.bag, &mut state.next_item);
+                let game_over =
+                    move_bottom(&mut state.game_space, &mut state.bag, &mut state.next_item);
+                if game_over {
+                    state.is_running = false;
+                    state.game_over = true;
+                    return Task::none();
+                }
 
                 let cleared_rows = Playground::clear_rows(&mut state.game_space, &mut state.score);
                 state.rows_cleared += cleared_rows;
@@ -46,21 +71,21 @@ pub fn update(state: &mut State, message: Message) -> Task<Message> {
             Task::none()
         }
         Message::Initialize => {
+            let mut game_space: Matrix = Vec::new();
+
+            for _ in 0..NUM_OF_SQUARES_Y as usize {
+                game_space.push(vec![None; NUM_OF_SQUARES_X as usize]);
+            }
+
+            state.game_space = game_space.clone();
+            state.default_game_space = game_space;
+
             let mut bag = Bag::new();
-            bag.default_items = vec![
-                Shape::create_o(),
-                Shape::create_i(),
-                Shape::create_s(),
-                Shape::create_z(),
-                Shape::create_t(),
-                Shape::create_l(),
-                Shape::create_j(),
-            ];
-            bag.refill();
+            bag.reset();
             state.bag = bag;
 
             let mut item = state.bag.get_item();
-            if let Some(next_item) = state.bag.show_next() {
+            if let Some(next_item) = state.bag.peek() {
                 state.next_item = next_item;
             }
 
@@ -79,14 +104,20 @@ pub fn update(state: &mut State, message: Message) -> Task<Message> {
             Task::perform(async {}, |_| Message::Move(Direction::Bottom))
         }
         Message::RotateClockwise => {
-            rotate_clockwise(&mut state.game_space);
-            state.playground.clear();
+            if state.is_running {
+                rotate_clockwise(&mut state.game_space);
+                state.playground.clear();
+            }
+
             Task::none()
         }
 
         Message::Rotate => {
-            rotate_counterclockwise(&mut state.game_space);
-            state.playground.clear();
+            if state.is_running {
+                rotate_counterclockwise(&mut state.game_space);
+                state.playground.clear();
+            }
+
             Task::none()
         }
     }

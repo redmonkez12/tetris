@@ -1,4 +1,5 @@
-use crate::shapes::{Brick, Matrix};
+use crate::shapes::{Brick};
+use crate::types::Matrix;
 
 fn find_size(rows: usize, cols: usize, game_space: &Matrix) -> Option<(usize, usize, usize)> {
     let mut min_row = rows;
