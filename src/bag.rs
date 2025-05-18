@@ -6,21 +6,34 @@ use crate::types::Shapes;
 #[derive(Debug)]
 pub struct Bag {
     pub items: Shapes,
-    pub default_items: Shapes,
 }
 
 impl Bag {
     pub fn new() -> Self {
+        let default_items = Bag::create_items();
+        
         Self {
-            default_items: Vec::new(),
-            items: Vec::new(),
+            items: default_items,
         }
+    }
+    
+    fn create_items() -> Shapes {
+        let mut default_items = vec![
+            Shape::create_o(),
+            Shape::create_i(),
+            Shape::create_s(),
+            Shape::create_z(),
+            Shape::create_t(),
+            Shape::create_l(),
+            Shape::create_j(),
+        ];
+        default_items.shuffle(&mut rand::rng());
+        
+        default_items
     }
 
     pub fn refill(&mut self) {
-        let mut rng = rand::rng();
-        self.items = self.default_items.clone();
-        self.items.shuffle(&mut rng);
+        self.items = Bag::create_items();
     }
 
     pub fn get_item(&mut self) -> Shape {
@@ -36,17 +49,22 @@ impl Bag {
     pub fn peek(&self) -> Option<Shape> {
         self.items.last().cloned()
     }
- 
-    pub fn reset(&mut self) {
-        self.default_items = vec![
-            Shape::create_o(),
-            Shape::create_i(),
-            Shape::create_s(),
-            Shape::create_z(),
-            Shape::create_t(),
-            Shape::create_l(),
-            Shape::create_j(),
-        ];
-        self.refill();
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_default_bag() {
+        let bag = Bag::new();
+        assert_eq!(bag.default_items.len(), 7);
+        assert_eq!(bag.items.len(), 7);
+        assert_eq!(bag.items, bag.default_items);
+    }
+    
+    #[test]
+    fn test_refill() {
+        
     }
 }

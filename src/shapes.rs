@@ -2,6 +2,7 @@ use iced::Color;
 use crate::types::Matrix;
 
 #[derive(Clone, Copy, Debug)]
+#[derive(PartialEq)]
 pub struct Brick {
     pub color: Color,
     pub moving: bool,
@@ -13,7 +14,7 @@ impl Brick {
     }
 }
 
-#[derive(Clone, Default, Debug)]
+#[derive(Clone, Default, Debug, PartialEq)]
 pub struct Shape {
     pub matrix: Matrix,
 }

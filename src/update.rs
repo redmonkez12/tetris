@@ -25,7 +25,7 @@ pub fn update(state: &mut State, message: Message) -> Task<Message> {
             if state.game_over {
                 state.game_space = state.default_game_space.clone();
                 state.game_over = false;
-                state.bag.reset();
+                // state.bag.reset();
                 state.score = 0;
                 state.rows_cleared = 0;
                 state.level = 0;
@@ -81,7 +81,7 @@ pub fn update(state: &mut State, message: Message) -> Task<Message> {
             state.default_game_space = game_space;
 
             let mut bag = Bag::new();
-            bag.reset();
+            // bag.reset();
             state.bag = bag;
 
             let mut item = state.bag.get_item();
