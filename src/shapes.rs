@@ -98,4 +98,33 @@ impl Shape {
             ],
         )
     }
+
+    pub fn set_default_position(&mut self, game_space: &mut Matrix) {
+        let mut seen = false;
+        let mut start_row = 0;
+        let start_col = game_space[0].len() / 2 - 1;
+
+        for (_, row) in self.matrix.iter().enumerate() {
+            seen = false;
+
+            for (col_index, cell) in row.iter().enumerate() {
+                if let Some(brick) = cell {
+                    seen = true;
+                    let x = start_row;
+                    let y = start_col + col_index;
+
+                    let mut new_brick = brick.clone();
+
+                    if x < game_space.len() && y < game_space[0].len() {
+                        new_brick.moving = true;
+                        game_space[x][y] = Some(new_brick);
+                    }
+                }
+            }
+
+            if seen {
+                start_row += 1
+            }
+        }
+    }
 }

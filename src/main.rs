@@ -9,9 +9,11 @@ mod enums;
 mod colors;
 mod constants;
 mod score;
+mod moves;
+mod level;
 
 use crate::bag::Bag;
-use crate::shapes::{Brick, Matrix, Shape};
+use crate::shapes::{Brick};
 use iced::theme::{Custom, Palette};
 use iced::widget::canvas::{Cache};
 use iced::{
@@ -38,8 +40,10 @@ fn init() -> (State, Task<Message>) {
         playground: Cache::new(),
         bag: Bag::new(),
         game_space,
-        tick_rate_ms: 500,
+        tick_rate_ms: 800,
         is_running: false,
+        level: 0,
+        rows_cleared: 0,
         ..Default::default()
     };
     (state, Task::perform(async {}, |_| Message::Initialize))

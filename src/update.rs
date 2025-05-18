@@ -1,10 +1,12 @@
-use iced::Task;
 use crate::bag::Bag;
 use crate::canvas::State;
 use crate::enums::Direction;
-use crate::shapes::Shape;
+use crate::moves::{move_bottom, move_left, move_right};
 use crate::rotations::{rotate_clockwise, rotate_counterclockwise};
 use crate::score::clear_rows;
+use crate::shapes::Shape;
+use iced::Task;
+use crate::level::{get_level, get_speed_by_level};
 
 #[derive(Debug, Clone, Copy)]
 pub enum Message {
@@ -26,163 +28,18 @@ pub fn update(state: &mut State, message: Message) -> Task<Message> {
             if !state.is_running {
                 return Task::none();
             }
-        
+
             if dir == Direction::Right {
-                let rows = state.game_space.len();
-                let cols = state.game_space[0].len();
-
-                let mut can_move = true;
-
-                for row in 0..rows {
-                    for col in 0..cols {
-                        if let Some(brick) = &state.game_space[row][col] {
-                            if brick.moving {
-                                if col + 1 >= cols
-                                    || (state.game_space[row][col + 1].is_some()
-                                    && !state.game_space[row][col + 1].as_ref().unwrap().moving)
-                                {
-                                    can_move = false;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    if !can_move {
-                        break;
-                    }
-                }
-
-                if can_move {
-                    for row in 0..rows {
-                        for col in (0..cols - 1).rev() {
-                            if let Some(brick) = &state.game_space[row][col] {
-                                if brick.moving {
-                                    state.game_space[row][col + 1] =
-                                        state.game_space[row][col].take();
-                                }
-                            }
-                        }
-                    }
-                }
+                move_right(&mut state.game_space);
             } else if dir == Direction::Left {
-                let rows = state.game_space.len();
-                let cols = state.game_space[0].len();
-
-                let mut can_move = true;
-
-                for row in 0..rows {
-                    for col in 0..cols {
-                        if let Some(brick) = &state.game_space[row][col] {
-                            if brick.moving {
-                                if col == 0
-                                    || (state.game_space[row][col - 1].is_some()
-                                    && !state.game_space[row][col - 1].as_ref().unwrap().moving)
-                                {
-                                    can_move = false;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    if !can_move {
-                        break;
-                    }
-                }
-
-                if can_move {
-                    for row in 0..rows {
-                        for col in 1..cols {
-                            if let Some(brick) = &state.game_space[row][col] {
-                                if brick.moving {
-                                    state.game_space[row][col - 1] =
-                                        state.game_space[row][col].take();
-                                }
-                            }
-                        }
-                    }
-                }
+                move_left(&mut state.game_space);
             } else {
-                let mut can_move = true;
-                let rows = state.game_space.len();
-                let cols = state.game_space[0].len();
+                move_bottom(&mut state.game_space, &mut state.bag, &mut state.next_item);
 
-                for row in (0..rows).rev() {
-                    for col in 0..cols {
-                        if let Some(brick) = &state.game_space[row][col] {
-                            if brick.moving {
-                                if row + 1 >= rows
-                                    || (state.game_space[row + 1][col].is_some()
-                                    && !state.game_space[row + 1][col].as_ref().unwrap().moving)
-                                {
-                                    can_move = false;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                if can_move {
-                    for row in (0..rows - 1).rev() {
-                        for col in 0..cols {
-                            if let Some(brick) = &state.game_space[row][col] {
-                                if brick.moving {
-                                    state.game_space[row + 1][col] =
-                                        state.game_space[row][col].take();
-                                }
-                            }
-                        }
-                    }
-
-                    for col in 0..cols {
-                        state.game_space[0][col] = None;
-                    }
-                } else {
-                    let rows = state.game_space.len();
-                    let cols = state.game_space[0].len();
-
-                    for row in 0..rows {
-                        for col in 0..cols {
-                            if let Some(brick) = &mut state.game_space[row][col] {
-                                if brick.moving {
-                                    brick.moving = false;
-                                }
-                            }
-                        }
-                    }
-
-                    let item = state.bag.get_item();
-                    if let Some(next_item) = state.bag.show_next() {
-                        state.next_item = next_item;
-                    }
-                    
-                    let mut seen = false;
-                    let mut start_row = 0;
-                    let start_col = state.game_space[0].len() / 2 - 1;
-
-                    for (_, row) in item.matrix.iter().enumerate() {
-                        seen = false;
-
-                        for (col_index, cell) in row.iter().enumerate() {
-                            if let Some(brick) = cell {
-                                seen = true;
-                                let x = start_row;
-                                let y = start_col + col_index;
-
-                                let mut new_brick = brick.clone();
-
-                                new_brick.moving = true;
-                                state.game_space[x][y] = Some(new_brick);
-                            }
-                        }
-
-                        if seen {
-                            start_row += 1
-                        }
-                    }
-                }
-
-                clear_rows(&mut state.game_space, &mut state.score);
+                let cleared_rows = clear_rows(&mut state.game_space, &mut state.score);
+                state.rows_cleared += cleared_rows;
+                state.level = get_level(state.rows_cleared);
+                state.tick_rate_ms = get_speed_by_level(state.level);
             }
 
             state.playground.clear();
@@ -202,37 +59,12 @@ pub fn update(state: &mut State, message: Message) -> Task<Message> {
             bag.refill();
             state.bag = bag;
 
-            let item = state.bag.get_item();
+            let mut item = state.bag.get_item();
             if let Some(next_item) = state.bag.show_next() {
                 state.next_item = next_item;
             }
-            
-            let mut seen = false;
-            let mut start_row = 0;
-            let start_col = state.game_space[0].len() / 2 - 1;
 
-            for (_, row) in item.matrix.iter().enumerate() {
-                seen = false;
-
-                for (col_index, cell) in row.iter().enumerate() {
-                    if let Some(brick) = cell {
-                        seen = true;
-                        let x = start_row;
-                        let y = start_col + col_index;
-
-                        let mut new_brick = brick.clone();
-
-                        if x < state.game_space.len() && y < state.game_space[0].len() {
-                            new_brick.moving = true;
-                            state.game_space[x][y] = Some(new_brick);
-                        }
-                    }
-                }
-
-                if seen {
-                    start_row += 1
-                }
-            }
+            item.set_default_position(&mut state.game_space);
 
             Task::none()
         }

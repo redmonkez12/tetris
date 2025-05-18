@@ -14,6 +14,8 @@ pub struct State {
     pub bag: Bag,
     pub game_space: Matrix,
     pub tick_rate_ms: u64,
+    pub level: u32,
+    pub rows_cleared: u32,
     pub score: u32,
     pub is_running: bool,
     pub next_item: Shape,
@@ -33,6 +35,19 @@ impl<Message> canvas::Program<Message> for State {
             let half = bounds.width / 2.0;
             let offset_x = half - PLAYGROUND_WIDTH / 2.0;
 
+            frame.fill_text(Text {
+                content: format!("Level: {}", self.level),
+                position: Point {
+                    x: half + PLAYGROUND_WIDTH / 2.0 + 10.0,
+                    y: OFFSET_Y - 20.0,
+                },
+                color: WHITE_COLOR.into(),
+                size: Pixels(14.0),
+                horizontal_alignment: Horizontal::Left,
+                vertical_alignment: Vertical::Center,
+                ..Default::default()
+            });
+            
             frame.fill_text(Text {
                 content: format!("Score: {}", self.score),
                 position: Point {

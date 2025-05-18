@@ -1,4 +1,4 @@
-pub fn clear_rows(game_space: &mut Vec<Vec<Option<crate::shapes::Brick>>>, score: &mut u32) {
+pub fn clear_rows(game_space: &mut Vec<Vec<Option<crate::shapes::Brick>>>, score: &mut u32) -> u32 {
     let rows = game_space.len();
     let cols = game_space[0].len();
 
@@ -41,5 +41,9 @@ pub fn clear_rows(game_space: &mut Vec<Vec<Option<crate::shapes::Brick>>>, score
                 }
             }
         }
+
+        return rows_to_clear.len() as u32;
     }
+    
+    0
 }

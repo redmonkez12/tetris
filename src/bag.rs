@@ -1,5 +1,5 @@
 use rand::seq::SliceRandom;
-use crate::shapes::{Brick, Shape};
+use crate::shapes::{Brick, Matrix, Shape};
 
 #[derive(Default)]
 #[derive(Debug)]
@@ -35,4 +35,5 @@ impl Bag {
     pub fn show_next(&self) -> Option<Shape> {
         self.items.last().cloned()
     }
+    
 }
