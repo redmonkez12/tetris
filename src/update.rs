@@ -56,14 +56,14 @@ pub fn update(state: &mut State, message: Message) -> Task<Message> {
                 if !moved {
                     let (mut item, next_item) = state.bag.get_item();
 
-                    let (game_over, rows_to_render) = is_game_over(&mut state.game_space, &next_item);
+                    let (game_over, rows_to_render) = is_game_over(&mut state.game_space, &item);
                     
                     if game_over {
                         println!("Game over!");
                         println!("Rows to render: {}", rows_to_render);
 
                         let x_pos = state.game_space[0].len() / 2 - 1;
-                        draw_game_over_brick(&mut state.game_space, x_pos, rows_to_render, &next_item);
+                        draw_game_over_brick(&mut state.game_space, x_pos, rows_to_render, &item);
                         
                         state.is_running = false;
                         state.game_over = true;

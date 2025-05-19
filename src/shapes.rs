@@ -98,10 +98,8 @@ impl Shape {
 
                     let mut new_brick = brick.clone();
 
-                    if x < game_space.len() && y < game_space[0].len() {
-                        new_brick.moving = true;
-                        game_space[x][y] = Some(new_brick);
-                    }
+                    new_brick.moving = true;
+                    game_space[x][y] = Some(new_brick);
                 }
             }
 
