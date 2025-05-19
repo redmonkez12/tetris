@@ -77,16 +77,17 @@ impl Playground {
         });
 
         let offset = 30.0;
-        let mut seen = false;
         let mut row_index = 0;
 
         for (_, row) in next_item.matrix.iter().enumerate() {
-            seen = false;
+            let has_brick = row.iter().any(|cell| cell.is_some());
+            
+            if !has_brick {
+                continue;
+            }
 
             for (col_index, item) in row.iter().enumerate() {
                 if let Some(brick) = item {
-                    seen = true;
-
                     let rect = Path::rectangle(
                         Point {
                             x: col_index as f32 * SQUARE_SIZE
@@ -109,9 +110,7 @@ impl Playground {
                 }
             }
 
-            if seen {
-                row_index += 1;
-            }
+            row_index += 1;
         }
     }
 

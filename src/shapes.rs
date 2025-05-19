@@ -1,8 +1,7 @@
-use iced::Color;
 use crate::types::Matrix;
+use iced::Color;
 
-#[derive(Clone, Copy, Debug)]
-#[derive(PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Brick {
     pub color: Color,
     pub moving: bool,
@@ -10,7 +9,7 @@ pub struct Brick {
 
 impl Brick {
     pub fn new(color: Color, moving: bool) -> Self {
-        Brick { color, moving}
+        Brick { color, moving }
     }
 }
 
@@ -35,14 +34,12 @@ impl Shape {
         let b = Some(Brick::new(color, false));
         let e = None;
 
-        Self::new(
-            vec![
-                vec![e, b, e, e],
-                vec![e, b, e, e],
-                vec![e, b, e, e],
-                vec![e, b, e, e],
-            ],
-        )
+        Self::new(vec![
+            vec![e, b, e, e],
+            vec![e, b, e, e],
+            vec![e, b, e, e],
+            vec![e, b, e, e],
+        ])
     }
 
     pub fn create_s() -> Self {
@@ -74,13 +71,7 @@ impl Shape {
         let b = Some(Brick::new(color, false));
         let e = None;
 
-        Self::new(
-            vec![
-                vec![e, b, e],
-                vec![e, b, e],
-                vec![e, b, b],
-            ],
-        )
+        Self::new(vec![vec![e, b, e], vec![e, b, e], vec![e, b, b]])
     }
 
     pub fn create_j() -> Self {
@@ -88,19 +79,13 @@ impl Shape {
         let b = Some(Brick::new(color, false));
         let e = None;
 
-        Self::new(
-            vec![
-                vec![e, b, e],
-                vec![e, b, e],
-                vec![b, b, e],
-            ],
-        )
+        Self::new(vec![vec![e, b, e], vec![e, b, e], vec![b, b, e]])
     }
 
     pub fn set_default_position(&mut self, game_space: &mut Matrix) {
-        let mut seen = false;
         let mut start_row = 0;
         let start_col = game_space[0].len() / 2 - 1;
+        let mut seen = true;
 
         for (_, row) in self.matrix.iter().enumerate() {
             seen = false;
@@ -124,5 +109,5 @@ impl Shape {
                 start_row += 1
             }
         }
-    } 
+    }
 }

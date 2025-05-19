@@ -3,7 +3,7 @@ use crate::canvas::State;
 use crate::constants::{NUM_OF_SQUARES_X, NUM_OF_SQUARES_Y};
 use crate::enums::Direction;
 use crate::level::{get_level, get_speed_by_level};
-use crate::moves::{move_bottom, move_left, move_right};
+use crate::moves::{draw_game_over_brick, is_game_over, move_bottom, move_left, move_right};
 use crate::playground::Playground;
 use crate::rotations::{rotate_clockwise, rotate_counterclockwise};
 use crate::types::{Matrix, TimeLocal};
@@ -51,18 +51,33 @@ pub fn update(state: &mut State, message: Message) -> Task<Message> {
             } else if dir == Direction::Left {
                 move_left(&mut state.game_space);
             } else {
-                let game_over =
-                    move_bottom(&mut state.game_space, &mut state.bag, &mut state.next_item);
-                if game_over {
-                    state.is_running = false;
-                    state.game_over = true;
-                    return Task::none();
-                }
+                let moved = move_bottom(&mut state.game_space);
+                
+                if !moved {
+                    let (mut item, next_item) = state.bag.get_item();
 
-                let cleared_rows = Playground::clear_rows(&mut state.game_space, &mut state.score);
-                state.rows_cleared += cleared_rows;
-                state.level = get_level(state.rows_cleared);
-                state.tick_rate_ms = get_speed_by_level(state.level);
+                    let (game_over, rows_to_render) = is_game_over(&mut state.game_space, &next_item);
+                    
+                    if game_over {
+                        println!("Game over!");
+                        println!("Rows to render: {}", rows_to_render);
+
+                        let x_pos = state.game_space[0].len() / 2 - 1;
+                        draw_game_over_brick(&mut state.game_space, x_pos, rows_to_render, &next_item);
+                        
+                        state.is_running = false;
+                        state.game_over = true;
+                        return Task::none();
+                    } else {
+                        state.next_item = next_item.clone();
+                        item.set_default_position(&mut state.game_space);
+                        
+                        let cleared_rows = Playground::clear_rows(&mut state.game_space, &mut state.score);
+                        state.rows_cleared += cleared_rows;
+                        state.level = get_level(state.rows_cleared);
+                        state.tick_rate_ms = get_speed_by_level(state.level);
+                    }
+                }
             }
 
             state.playground.clear();
