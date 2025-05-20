@@ -1,11 +1,11 @@
 use rand::seq::SliceRandom;
-use crate::shapes::{Shape};
-use crate::types::Shapes;
+use crate::tetromino::{Tetromino};
+use crate::types::Tetrominos;
 
 #[derive(Default)]
 #[derive(Debug)]
 pub struct Bag {
-    pub items: Shapes,
+    pub items: Tetrominos,
 }
 
 impl Bag {
@@ -17,7 +17,7 @@ impl Bag {
         }
     }
 
-    pub fn get_item(&mut self) -> (Shape, Shape) {
+    pub fn get_item(&mut self) -> (Tetromino, Tetromino) {
         let shape = self.items.pop().unwrap();
 
         if self.items.len() < 1 {
@@ -33,15 +33,15 @@ impl Bag {
         self.items = Bag::create_items();
     }
 
-    fn create_items() -> Shapes {
+    fn create_items() -> Tetrominos {
         let mut default_items = vec![
-            Shape::create_o(),
-            Shape::create_i(),
-            Shape::create_s(),
-            Shape::create_z(),
-            Shape::create_t(),
-            Shape::create_l(),
-            Shape::create_j(),
+            Tetromino::create_o(),
+            Tetromino::create_i(),
+            Tetromino::create_s(),
+            Tetromino::create_z(),
+            Tetromino::create_t(),
+            Tetromino::create_l(),
+            Tetromino::create_j(),
         ];
         default_items.shuffle(&mut rand::rng());
 

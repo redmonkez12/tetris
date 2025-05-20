@@ -1,6 +1,6 @@
 use crate::bag::Bag;
 use crate::playground::Playground;
-use crate::shapes::Shape;
+use crate::tetromino::Tetromino;
 use crate::types::{Matrix, TimeLocal};
 use iced::widget::canvas;
 use iced::widget::canvas::{Cache, Geometry};
@@ -19,7 +19,7 @@ pub struct State {
     pub score: u32,
     pub is_running: bool,
     pub game_over: bool,
-    pub next_item: Shape,
+    pub next_item: Tetromino,
 }
 impl<Message> canvas::Program<Message> for State {
     type State = ();

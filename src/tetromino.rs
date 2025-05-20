@@ -1,5 +1,6 @@
 use crate::types::Matrix;
 use iced::Color;
+use crate::colors::{COLOR_I, COLOR_J, COLOR_L, COLOR_O, COLOR_S, COLOR_T, COLOR_Z};
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Brick {
@@ -14,24 +15,22 @@ impl Brick {
 }
 
 #[derive(Clone, Default, Debug, PartialEq)]
-pub struct Shape {
+pub struct Tetromino {
     pub matrix: Matrix,
 }
 
-impl Shape {
+impl Tetromino {
     pub fn new(matrix: Vec<Vec<Option<Brick>>>) -> Self {
         Self { matrix }
     }
 
     pub fn create_o() -> Self {
-        let color = Color::from_rgb(1.0, 1.0, 0.0);
-        let b = Some(Brick::new(color, false));
+        let b = Some(Brick::new(COLOR_O.into(), false));
         Self::new(vec![vec![b, b], vec![b, b]])
     }
 
     pub fn create_i() -> Self {
-        let color = Color::from_rgb(0.0, 1.0, 1.0);
-        let b = Some(Brick::new(color, false));
+        let b = Some(Brick::new(COLOR_I.into(), false));
         let e = None;
 
         Self::new(vec![
@@ -43,40 +42,35 @@ impl Shape {
     }
 
     pub fn create_s() -> Self {
-        let color = Color::from_rgb(0.0, 1.0, 0.0);
-        let b = Some(Brick::new(color, false));
+        let b = Some(Brick::new(COLOR_S.into(), false));
         let e = None;
 
         Self::new(vec![vec![e, e, e], vec![e, b, b], vec![b, b, e]])
     }
 
     pub fn create_z() -> Self {
-        let color = Color::from_rgb(1.0, 0.0, 0.0);
-        let b = Some(Brick::new(color, false));
+        let b = Some(Brick::new(COLOR_Z.into(), false));
         let e = None;
 
         Self::new(vec![vec![e, e, e], vec![b, b, e], vec![e, b, b]])
     }
 
     pub fn create_t() -> Self {
-        let color = Color::from_rgb(0.5, 0.0, 0.5);
-        let b = Some(Brick::new(color, false));
+        let b = Some(Brick::new(COLOR_T.into(), false));
         let e = None;
 
         Self::new(vec![vec![e, e, e], vec![b, b, b], vec![e, b, e]])
     }
 
     pub fn create_l() -> Self {
-        let color = Color::from_rgb(1.0, 0.5, 0.0);
-        let b = Some(Brick::new(color, false));
+        let b = Some(Brick::new(COLOR_L.into(), false));
         let e = None;
 
         Self::new(vec![vec![e, b, e], vec![e, b, e], vec![e, b, b]])
     }
 
     pub fn create_j() -> Self {
-        let color = Color::from_rgb(0.0, 0.0, 1.0);
-        let b = Some(Brick::new(color, false));
+        let b = Some(Brick::new(COLOR_J.into(), false));
         let e = None;
 
         Self::new(vec![vec![e, b, e], vec![e, b, e], vec![b, b, e]])

@@ -3,7 +3,7 @@ use iced::alignment::{Horizontal, Vertical};
 use iced::widget::canvas::{Frame, Path, Stroke, Text};
 use crate::colors::WHITE_COLOR;
 use crate::constants::{OFFSET_Y, PLAYGROUND_HEIGHT, PLAYGROUND_WIDTH, SPACING, SQUARE_SIZE};
-use crate::shapes::{Shape};
+use crate::tetromino::{Tetromino};
 use crate::types::Matrix;
 
 pub struct Playground {
@@ -62,7 +62,7 @@ impl Playground {
         });
     }
 
-    pub fn render_next_brick(&self, frame: &mut Frame<Renderer>, next_item: &Shape) {
+    pub fn render_next_brick(&self, frame: &mut Frame<Renderer>, next_item: &Tetromino) {
         frame.fill_text(Text {
             content: "Next brick".to_string(),
             position: Point {

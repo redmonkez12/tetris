@@ -1,4 +1,4 @@
-use crate::shapes::{Brick};
+use crate::tetromino::{Brick};
 use crate::types::Matrix;
 
 fn find_size(rows: usize, cols: usize, game_space: &Matrix) -> Option<(usize, usize, usize)> {

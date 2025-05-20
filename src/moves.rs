@@ -1,5 +1,4 @@
-use crate::bag::Bag;
-use crate::shapes::Shape;
+use crate::tetromino::Tetromino;
 use crate::types::Matrix;
 
 pub fn move_right(game_space: &mut Matrix) {
@@ -141,7 +140,7 @@ pub fn draw_game_over_brick(
     game_space: &mut Matrix,
     start_col: usize,
     rows_to_render: u32,
-    item: &Shape,
+    item: &Tetromino,
 ) {
     let rows_to_skip = item.matrix.len() - rows_to_render as usize;
     let mut row_index = 0;
@@ -169,7 +168,7 @@ pub fn draw_game_over_brick(
     }
 }
 
-pub fn is_game_over(game_space: &Matrix, item: &Shape) -> (bool, u32) {
+pub fn is_game_over(game_space: &Matrix, item: &Tetromino) -> (bool, u32) {
     let start_col = game_space[0].len() / 2 - 1;
     let mut rows_to_render = 0;
     let mut seen = true;
@@ -200,13 +199,13 @@ pub fn is_game_over(game_space: &Matrix, item: &Shape) -> (bool, u32) {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::shapes::Brick;
+    use crate::tetromino::Brick;
     use iced::Color;
 
     #[test]
     fn test_game_over_i() {
         let moving_brick = Some(Brick::new(Color::from_rgb(1.0, 1.0, 0.0), false));
-        let shape = Shape::create_i();
+        let shape = Tetromino::create_i();
 
         let game_space: Matrix = vec![
             vec![
@@ -245,7 +244,7 @@ mod tests {
     #[test]
     fn test_game_over_o() {
         let moving_brick = Some(Brick::new(Color::from_rgb(1.0, 1.0, 0.0), false));
-        let shape = Shape::create_o();
+        let shape = Tetromino::create_o();
 
         let game_space: Matrix = vec![
             vec![None; 10],
@@ -284,7 +283,7 @@ mod tests {
     #[test]
     fn test_game_over_l() {
         let moving_brick = Some(Brick::new(Color::from_rgb(1.0, 1.0, 0.0), false));
-        let shape = Shape::create_l();
+        let shape = Tetromino::create_l();
 
         let game_space: Matrix = vec![
             vec![None; 10],
@@ -325,7 +324,7 @@ mod tests {
     #[test]
     fn test_game_over_z() {
         let moving_brick = Some(Brick::new(Color::from_rgb(1.0, 1.0, 0.0), false));
-        let shape = Shape::create_z();
+        let shape = Tetromino::create_z();
 
         let game_space: Matrix = vec![
             vec![None; 10],
@@ -762,7 +761,7 @@ mod tests {
     #[test]
     fn test_draw_game_over_brick_1() {
         let moving_brick = Some(Brick::new(Color::from_rgb(1.0, 1.0, 0.0), false));
-        let shape = Shape::create_i();
+        let shape = Tetromino::create_i();
 
         let mut game_space: Matrix = vec![vec![
             None,

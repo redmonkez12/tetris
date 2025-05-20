@@ -7,7 +7,7 @@ mod level;
 mod moves;
 mod playground;
 mod rotations;
-mod shapes;
+mod tetromino;
 mod subscription;
 mod types;
 mod update;
