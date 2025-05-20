@@ -13,14 +13,12 @@ mod types;
 mod update;
 mod view;
 
-use crate::bag::Bag;
 use crate::canvas::State;
 use crate::colors::{BLACK_COLOR, DANGER_COLOR, PRIMARY_COLOR, SECONDARY_COLOR, WHITE_COLOR};
 use crate::subscription::subscription;
 use crate::update::{Message, update};
 use crate::view::view;
 use iced::theme::{Custom, Palette};
-use iced::widget::canvas::Cache;
 use iced::{Task, Theme};
 use std::sync::Arc;
 use crate::constants::DEFAULT_LEVEL;
@@ -30,13 +28,8 @@ fn init() -> (State, Task<Message>) {
     tracing_subscriber::fmt::init();
 
     let state = State {
-        playground: Cache::new(),
-        bag: Bag::new(),
-        game_space: Vec::new(),
         tick_rate_ms: get_speed_by_level(DEFAULT_LEVEL),
-        is_running: false,
         level: DEFAULT_LEVEL,
-        rows_cleared: 0,
         ..Default::default()
     };
     (state, Task::perform(async {}, |_| Message::Initialize))

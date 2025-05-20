@@ -23,7 +23,6 @@ pub fn update(state: &mut State, message: Message) -> Task<Message> {
     match message {
         Message::TogglePause => {
             if state.game_over {
-                state.game_space = state.default_game_space.clone();
                 state.game_over = false;
                 state.bag.refill();
                 state.score = 0;
@@ -91,10 +90,8 @@ pub fn update(state: &mut State, message: Message) -> Task<Message> {
             }
 
             state.game_space = game_space.clone();
-            state.default_game_space = game_space;
 
-            let mut bag = Bag::new();
-            bag.refill();
+            let bag = Bag::new();
             state.bag = bag;
 
             let (mut item, next_item) = state.bag.get_item();

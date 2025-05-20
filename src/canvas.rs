@@ -12,7 +12,6 @@ pub struct State {
     pub playground: Cache,
     pub bag: Bag,
     pub game_space: Matrix,
-    pub default_game_space: Matrix,
     pub tick_rate_ms: u64,
     pub level: u32,
     pub rows_cleared: u32,
@@ -21,6 +20,7 @@ pub struct State {
     pub game_over: bool,
     pub next_item: Tetromino,
 }
+
 impl<Message> canvas::Program<Message> for State {
     type State = ();
 
